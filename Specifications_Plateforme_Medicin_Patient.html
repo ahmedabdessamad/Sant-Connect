@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spécifications — Plateforme Médecin-Patient</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --blue-primary: #1A6FAD;
+    --blue-light:   #E8F3FB;
+    --blue-mid:     #4A90C4;
+    --blue-dark:    #0D4F82;
+    --gray-text:    #333333;
+    --gray-light:   #F7F9FC;
+    --gray-border:  #D0DCE8;
+    --green:        #27AE60;
+    --orange:       #E67E22;
+    --red:          #E74C3C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    color: var(--gray-text);
+    background: #fff;
+    line-height: 1.6;
+  }
+
+  /* ── PAGE DE GARDE ── */
+  .cover {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-primary) 60%, var(--blue-mid) 100%);
+    color: white;
+    padding: 64px 72px 52px;
+    min-height: 280px;
+    position: relative;
+  }
+  .cover-label {
+    font-size: 10pt;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #90CAE8;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .cover h1 {
+    font-size: 32pt;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .cover-sub {
+    font-size: 12pt;
+    color: #BDE0F7;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+  .cover-meta {
+    font-size: 9pt;
+    color: #90CAE8;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 16px;
+    margin-top: 8px;
+  }
+  .cover-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 9pt;
+    color: #e0f0ff;
+    font-weight: 500;
+  }
+
+  /* ── CONTENU ── */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 72px 60px;
+  }
+
+  /* ── VERSION TABLE ── */
+  .version-section { margin: 32px 0 24px; }
+
+  /* ── RÉSUMÉ ── */
+  .executive-summary {
+    background: var(--blue-light);
+    border-left: 4px solid var(--blue-primary);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 24px 0;
+  }
+  .executive-summary p { margin-bottom: 8px; font-size: 10pt; line-height: 1.65; }
+  .executive-summary p:last-child { margin-bottom: 0; }
+
+  /* ── MODULE HEADER ── */
+  .module-header {
+    background: linear-gradient(135deg, var(--blue-primary), var(--blue-mid));
+    color: white;
+    padding: 18px 24px;
+    border-radius: 10px;
+    margin: 40px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .module-number {
+    font-size: 28pt;
+    font-weight: 700;
+    opacity: 0.4;
+    line-height: 1;
+    min-width: 52px;
+  }
+  .module-title { font-size: 16pt; font-weight: 700; line-height: 1.2; }
+  .module-subtitle { font-size: 9.5pt; color: #BDE0F7; margin-top: 4px; font-weight: 400; }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-size: 13pt;
+    color: var(--blue-primary);
+    font-weight: 700;
+    margin: 28px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--blue-light);
+  }
+  h3 {
+    font-size: 11pt;
+    color: var(--blue-mid);
+    font-weight: 600;
+    margin: 18px 0 8px;
+  }
+  p { margin-bottom: 10px; text-align: justify; font-size: 10pt; }
+
+  /* ── BULLETS ── */
+  ul.spec-list {
+    list-style: none;
+    margin: 6px 0 14px 0;
+    padding: 0;
+  }
+  ul.spec-list li {
+    padding: 4px 0 4px 22px;
+    position: relative;
+    font-size: 10pt;
+    line-height: 1.55;
+    border-bottom: 1px dotted #e8eef4;
+  }
+  ul.spec-list li:last-child { border-bottom: none; }
+  ul.spec-list li::before {
+    content: "›";
+    color: var(--blue-primary);
+    font-weight: 700;
+    font-size: 14pt;
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    line-height: 1.4;
+  }
+
+  /* ── TABLES ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 9.5pt;
+  }
+  thead tr { background: var(--blue-primary); color: white; }
+  thead th {
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  tbody tr:nth-child(odd)  { background: var(--gray-light); }
+  tbody tr:nth-child(even) { background: white; }
+  tbody tr:hover { background: var(--blue-light); }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gray-border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  /* ── PRIORITY BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 8.5pt;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-haute   { background: #FDECEA; color: var(--red);    border: 1px solid #F5B7B1; }
+  .badge-moyenne { background: #FEF5E7; color: var(--orange); border: 1px solid #FAD7A0; }
+  .badge-basse   { background: #EAFAF1; color: var(--green);  border: 1px solid #A9DFBF; }
+
+  /* ── NOTE BOX ── */
+  .note {
+    background: #FFFBEA;
+    border-left: 4px solid #F1C40F;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 9.5pt;
+    color: #6B5B00;
+    margin: 16px 0;
+    font-style: italic;
+  }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid var(--gray-border); margin: 24px 0; }
+
+  /* ── ROADMAP ── */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .phase-card {
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--blue-primary);
+    border-radius: 4px 0 0 4px;
+  }
+  .phase-num { font-size: 8.5pt; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .phase-name { font-size: 11pt; font-weight: 700; color: var(--blue-primary); margin: 4px 0 2px; }
+  .phase-dur { font-size: 9pt; color: var(--orange); font-weight: 600; margin-bottom: 6px; }
+  .phase-desc { font-size: 9pt; color: #555; line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    font-size: 8.5pt;
+    color: #aaa;
+    padding: 24px 0 8px;
+    border-top: 1px solid var(--gray-border);
+    margin-top: 40px;
+  }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { font-size: 9.5pt; }
+    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .module-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .phase-card::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .executive-summary { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    h2 { page-break-after: avoid; }
+    .module-header { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+  }
+
+  /* ── PRINT BUTTON ── */
+  .print-btn {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: var(--blue-primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 10pt;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(26,111,173,0.35);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .print-btn:hover { background: var(--blue-dark); }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ PAGE DE GARDE -->
+<div class="cover">
+  <div class="cover-label">Document de Spécifications Fonctionnelles</div>
+  <h1>Plateforme Médecin-Patient</h1>
+  <div class="cover-sub">Messagerie · Gestion des Rendez-vous · Suivi des Traitements</div>
+  <div class="cover-tags">
+    <span class="tag">Version 1.0</span>
+    <span class="tag">Mai 2026</span>
+    <span class="tag">Confidentiel</span>
+    <span class="tag">Médecins &amp; Patients</span>
+  </div>
+  <div class="cover-meta">
+    Auteur : Ahmed Abdessamad &nbsp;|&nbsp; ahmedabdessamed02@gmail.com &nbsp;|&nbsp; Tous droits réservés
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ CONTENU -->
+<div class="content">
+
+  <!-- Historique des versions -->
+  <div class="version-section">
+    <h2 style="margin-top:0;">Historique des versions</h2>
+    <table>
+      <thead><tr>
+        <th>Version</th><th>Date</th><th>Auteur</th><th>Description</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1.0</strong></td>
+          <td>Mai 2026</td>
+          <td>Ahmed Abdessamad</td>
+          <td>Version initiale — spécifications complètes des 3 modules</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Résumé exécutif -->
+  <div class="executive-summary">
+    <p>Ce document décrit les <strong>spécifications fonctionnelles</strong> de la plateforme numérique de santé dédiée à la relation médecin-patient. La plateforme vise à améliorer la communication, l'organisation des soins et le suivi thérapeutique en proposant trois modules principaux.</p>
+    <p>Il s'adresse aux équipes de développement, aux chefs de projet et aux parties prenantes. Il constitue la <strong>référence contractuelle</strong> pour la conception et le développement de la plateforme.</p>
+  </div>
+
+  <!-- Utilisateurs cibles -->
+  <h2>Utilisateurs cibles</h2>
+  <table>
+    <thead><tr><th>Rôle</th><th>Description</th><th>Niveau d'accès</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Médecin</strong></td>
+        <td>Praticien de santé gérant ses patients, consultations et ordonnances</td>
+        <td>Complet (lecture + écriture)</td>
+      </tr>
+      <tr>
+        <td><strong>Patient</strong></td>
+        <td>Personne recevant des soins médicaux, avec accès à son espace personnel</td>
+        <td>Limité (propres données uniquement)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════ MODULE 1 : MESSAGERIE -->
+  <div class="module-header">
+    <div class="module-number">01</div>
+    <div>
+      <div class="module-title">Messagerie Sécurisée</div>
+      <div class="module-subtitle">Communication en temps réel entre médecins et patients</div>
+    </div>
+  </div>
+
+  <h2>1.1 Objectifs du module</h2>
+  <p>Le module de messagerie offre un canal de communication direct, sécurisé et traçable entre le médecin et ses patients. Il remplace les échanges non sécurisés par email ou téléphone et <strong>garantit la confidentialité des données médicales</strong>.</p>
+
+  <h2>1.2 Fonctionnalités principales</h2>
+  <h3>Pour le médecin</h3>
+  <ul class="spec-list">
+    <li>Envoyer et recevoir des messages texte aux patients</li>
+    <li>Joindre des fichiers : ordonnances, résultats d'analyses, comptes-rendus (PDF, image)</li>
+    <li>Consulter l'historique complet des échanges par patient</li>
+    <li>Marquer les messages comme lus / non lus</li>
+    <li>Archiver ou supprimer des conversations</li>
+    <li>Recevoir des notifications en temps réel (web + mobile)</li>
+    <li>Répondre à plusieurs patients depuis une boîte de réception unifiée</li>
+  </ul>
+
+  <h3>Pour le patient</h3>
+  <ul class="spec-list">
+    <li>Envoyer un message à son médecin traitant</li>
+    <li>Joindre des documents (photos de symptômes, résultats d'examens)</li>
+    <li>Consulter l'historique de ses échanges avec le médecin</li>
+    <li>Être notifié lors d'une réponse du médecin</li>
+    <li>Télécharger les documents partagés par le médecin</li>
+  </ul>
+
+  <h2>1.3 Tableau des fonctionnalités</h2>
+  <table>
+    <thead><tr><th>Fonctionnalité</th><th>Acteur</th><th>Priorité</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Envoi de message</td><td>Médecin / Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Envoi de messages texte sécurisés avec horodatage</td></tr>
+      <tr><td>Pièces jointes</td><td>Médecin / Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Envoi de fichiers PDF, JPEG, PNG (max 10 Mo par fichier)</td></tr>
+      <tr><td>Historique des échanges</td><td>Médecin / Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Accès à l'intégralité des messages passés, avec recherche plein texte</td></tr>
+      <tr><td>Notifications push</td><td>Médecin / Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Alerte instantanée lors de réception d'un nouveau message</td></tr>
+      <tr><td>Archivage</td><td>Médecin</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Archivage des conversations inactives pour désencombrer la boîte</td></tr>
+      <tr><td>Statut de lecture</td><td>Médecin</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Indicateur visuel lu / non lu sur chaque message</td></tr>
+      <tr><td>Chiffrement bout-en-bout</td><td>Système</td><td><span class="badge badge-haute">Haute</span></td><td>Chiffrement AES-256 de tous les messages et pièces jointes</td></tr>
+      <tr><td>Conformité RGPD / HDS</td><td>Système</td><td><span class="badge badge-haute">Haute</span></td><td>Certification HDS, droit d'accès et d'effacement des données</td></tr>
+    </tbody>
+  </table>
+
+  <h2>1.4 Exigences non fonctionnelles</h2>
+  <ul class="spec-list">
+    <li><strong>Sécurité :</strong> Chiffrement de bout en bout (AES-256). Authentification à deux facteurs obligatoire pour les médecins.</li>
+    <li><strong>Performance :</strong> Livraison des messages en moins de 2 secondes.</li>
+    <li><strong>Conformité :</strong> Respect du RGPD et certification HDS (Hébergeur de Données de Santé).</li>
+    <li><strong>Disponibilité :</strong> SLA de 99,9 % de disponibilité.</li>
+    <li><strong>Accessibilité :</strong> Interface conforme WCAG 2.1 niveau AA.</li>
+  </ul>
+
+  <div class="note">
+    ℹ Les messages échangés constituent des données de santé. Leur hébergement doit être certifié HDS conformément à l'article L. 1111-8 du Code de la santé publique.
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════ MODULE 2 : RENDEZ-VOUS -->
+  <div class="module-header">
+    <div class="module-number">02</div>
+    <div>
+      <div class="module-title">Gestion des Rendez-vous</div>
+      <div class="module-subtitle">Planification, confirmation et suivi des consultations</div>
+    </div>
+  </div>
+
+  <h2>2.1 Objectifs du module</h2>
+  <p>Le module de gestion des rendez-vous permet aux patients de <strong>réserver une consultation en ligne</strong> et aux médecins d'organiser leur agenda de manière efficace. Il réduit les no-shows grâce aux rappels automatiques et simplifie la gestion administrative.</p>
+
+  <h2>2.2 Fonctionnalités principales</h2>
+  <h3>Pour le médecin</h3>
+  <ul class="spec-list">
+    <li>Configurer ses plages horaires de disponibilité (hebdomadaires, exceptionnelles)</li>
+    <li>Voir l'agenda en vue journalière, hebdomadaire et mensuelle</li>
+    <li>Accepter, refuser ou reporter un rendez-vous demandé par un patient</li>
+    <li>Créer un rendez-vous directement pour un patient</li>
+    <li>Gérer plusieurs types de consultation (présentiel, téléconsultation, urgence)</li>
+    <li>Configurer la durée par défaut de chaque type de consultation</li>
+    <li>Exporter l'agenda (iCal, Google Calendar, PDF)</li>
+    <li>Consulter les statistiques (taux d'annulation, charge horaire, no-shows)</li>
+  </ul>
+
+  <h3>Pour le patient</h3>
+  <ul class="spec-list">
+    <li>Rechercher un médecin par spécialité, nom ou localisation</li>
+    <li>Consulter les créneaux disponibles en temps réel</li>
+    <li>Réserver un rendez-vous en ligne en 3 clics</li>
+    <li>Choisir le type de consultation : présentiel ou téléconsultation</li>
+    <li>Recevoir une confirmation par email et/ou SMS</li>
+    <li>Annuler ou modifier un rendez-vous jusqu'à 2 h avant la consultation</li>
+    <li>Consulter l'historique de tous ses rendez-vous passés et à venir</li>
+    <li>Recevoir des rappels automatiques (J-1 et H-2 avant le rendez-vous)</li>
+  </ul>
+
+  <h2>2.3 Flux de prise de rendez-vous</h2>
+  <table>
+    <thead><tr><th>#</th><th>Acteur</th><th>Action</th><th>Résultat</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Patient</td><td>Recherche un médecin et sélectionne un créneau</td><td>Formulaire de confirmation affiché</td></tr>
+      <tr><td>2</td><td>Patient</td><td>Confirme le rendez-vous</td><td>Demande envoyée au médecin</td></tr>
+      <tr><td>3</td><td>Système</td><td>Notification envoyée au médecin</td><td>Médecin informé immédiatement</td></tr>
+      <tr><td>4</td><td>Médecin</td><td>Accepte ou refuse la demande</td><td>Patient notifié de la décision</td></tr>
+      <tr><td>5</td><td>Système</td><td>Rappels automatiques J-1 et H-2</td><td>Patient notifié par SMS / email</td></tr>
+      <tr><td>6</td><td>Médecin</td><td>Marque la consultation comme effectuée</td><td>Dossier patient mis à jour</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.4 Tableau des fonctionnalités</h2>
+  <table>
+    <thead><tr><th>Fonctionnalité</th><th>Acteur</th><th>Priorité</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Agenda médecin</td><td>Médecin</td><td><span class="badge badge-haute">Haute</span></td><td>Vue calendrier avec filtres jour / semaine / mois</td></tr>
+      <tr><td>Configuration disponibilités</td><td>Médecin</td><td><span class="badge badge-haute">Haute</span></td><td>Définition des créneaux ouverts à la réservation</td></tr>
+      <tr><td>Réservation en ligne</td><td>Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Sélection du créneau et confirmation en 3 clics</td></tr>
+      <tr><td>Types de consultation</td><td>Médecin / Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Présentiel, téléconsultation vidéo, urgence</td></tr>
+      <tr><td>Rappels automatiques</td><td>Système</td><td><span class="badge badge-haute">Haute</span></td><td>Email et SMS à J-1 et H-2 avant le rendez-vous</td></tr>
+      <tr><td>Annulation en ligne</td><td>Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Annulation possible jusqu'à 2h avant, avec notification automatique</td></tr>
+      <tr><td>Gestion des no-shows</td><td>Médecin</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Marquage automatique et statistiques associées</td></tr>
+      <tr><td>Export agenda</td><td>Médecin</td><td><span class="badge badge-basse">Basse</span></td><td>Export iCal, Google Calendar, PDF</td></tr>
+      <tr><td>Statistiques agenda</td><td>Médecin</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Taux d'annulation, charge horaire, pics d'activité</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2.5 Exigences non fonctionnelles</h2>
+  <ul class="spec-list">
+    <li><strong>Temps réel :</strong> Mise à jour instantanée des créneaux disponibles pour éviter les doubles réservations.</li>
+    <li><strong>Fiabilité des notifications :</strong> Taux de livraison SMS supérieur à 98 %.</li>
+    <li><strong>Compatibilité mobile :</strong> Interface responsive, accessible sur smartphone et tablette.</li>
+    <li><strong>Gestion des fuseaux horaires :</strong> Support multi-fuseaux pour les téléconsultations.</li>
+    <li><strong>RGPD :</strong> Droit d'accès et de suppression des données de rendez-vous.</li>
+  </ul>
+
+  <hr>
+
+  <!-- ══════════════════════ MODULE 3 : SUIVI TRAITEMENTS -->
+  <div class="module-header">
+    <div class="module-number">03</div>
+    <div>
+      <div class="module-title">Suivi des Traitements</div>
+      <div class="module-subtitle">Prescription électronique, observance et suivi thérapeutique</div>
+    </div>
+  </div>
+
+  <h2>3.1 Objectifs du module</h2>
+  <p>Le module de suivi des traitements permet au médecin de <strong>prescrire électroniquement</strong> des médicaments ou thérapies, et au patient de gérer ses prises médicamenteuses au quotidien. Il améliore l'observance thérapeutique grâce aux rappels et permet un suivi en temps réel de l'état de santé du patient.</p>
+
+  <h2>3.2 Fonctionnalités principales</h2>
+  <h3>Pour le médecin</h3>
+  <ul class="spec-list">
+    <li>Créer et modifier des prescriptions électroniques (médicament, posologie, durée)</li>
+    <li>Consulter l'historique complet des prescriptions par patient</li>
+    <li>Suivre l'observance du patient (prises confirmées vs manquées)</li>
+    <li>Recevoir des alertes en cas de non-observance répétée (2 jours consécutifs)</li>
+    <li>Ajouter des notes cliniques liées à un traitement en cours</li>
+    <li>Renouveler ou arrêter un traitement d'un clic</li>
+    <li>Vérifier automatiquement les interactions médicamenteuses</li>
+    <li>Visualiser l'évolution des indicateurs de santé du patient (courbes)</li>
+  </ul>
+
+  <h3>Pour le patient</h3>
+  <ul class="spec-list">
+    <li>Consulter la liste de ses traitements en cours avec instructions détaillées</li>
+    <li>Confirmer chaque prise médicamenteuse dans l'application</li>
+    <li>Recevoir des rappels de prise (notifications push / SMS) aux horaires configurés</li>
+    <li>Signaler des effets secondaires ou problèmes liés au traitement</li>
+    <li>Consulter l'historique de tous ses traitements passés</li>
+    <li>Accéder aux notices officielles des médicaments prescrits</li>
+    <li>Partager son tableau de bord de santé avec son médecin</li>
+  </ul>
+
+  <h2>3.3 Structure d'une prescription</h2>
+  <table>
+    <thead><tr><th>Champ</th><th>Type</th><th>Obligatoire</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Médicament</td><td>Texte / Liste</td><td>✅ Oui</td><td>Nom DCI et commercial (base BDPM officielle)</td></tr>
+      <tr><td>Posologie</td><td>Texte</td><td>✅ Oui</td><td>Exemple : 1 comprimé matin et soir</td></tr>
+      <tr><td>Durée</td><td>Date début / fin</td><td>✅ Oui</td><td>Période complète du traitement</td></tr>
+      <tr><td>Fréquence des rappels</td><td>Paramètre</td><td>Non</td><td>Heure(s) de rappel quotidien configurées par le patient</td></tr>
+      <tr><td>Instructions spéciales</td><td>Texte libre</td><td>Non</td><td>Avant repas, avec eau, éviter alcool, etc.</td></tr>
+      <tr><td>Renouvellement autorisé</td><td>Booléen + date</td><td>Non</td><td>Indique si le renouvellement automatique est autorisé</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3.4 Tableau des fonctionnalités</h2>
+  <table>
+    <thead><tr><th>Fonctionnalité</th><th>Acteur</th><th>Priorité</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Prescription électronique</td><td>Médecin</td><td><span class="badge badge-haute">Haute</span></td><td>Création de prescriptions structurées, modifiables et archivées</td></tr>
+      <tr><td>Suivi des prises</td><td>Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Confirmation quotidienne des prises avec horodatage immuable</td></tr>
+      <tr><td>Rappels de prise</td><td>Système</td><td><span class="badge badge-haute">Haute</span></td><td>Notifications push et SMS aux horaires configurés</td></tr>
+      <tr><td>Tableau de bord observance</td><td>Médecin</td><td><span class="badge badge-haute">Haute</span></td><td>Taux d'observance hebdomadaire et mensuel par patient</td></tr>
+      <tr><td>Alertes non-observance</td><td>Médecin</td><td><span class="badge badge-haute">Haute</span></td><td>Alerte automatique après 2 jours de prises manquées consécutifs</td></tr>
+      <tr><td>Signalement effets indésirables</td><td>Patient</td><td><span class="badge badge-haute">Haute</span></td><td>Formulaire transmis directement au médecin avec notification</td></tr>
+      <tr><td>Interactions médicamenteuses</td><td>Système</td><td><span class="badge badge-haute">Haute</span></td><td>Vérification automatique lors de la prescription (base BDPM)</td></tr>
+      <tr><td>Historique des traitements</td><td>Médecin / Patient</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Accès à toutes les prescriptions passées, exportables en PDF</td></tr>
+      <tr><td>Renouvellement automatique</td><td>Médecin</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Renouvellement automatique des traitements chroniques</td></tr>
+      <tr><td>Indicateurs de santé</td><td>Patient</td><td><span class="badge badge-moyenne">Moyenne</span></td><td>Saisie : tension artérielle, glycémie, poids, fréquence cardiaque</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3.5 Exigences non fonctionnelles</h2>
+  <ul class="spec-list">
+    <li><strong>Sécurité :</strong> Les prescriptions sont des données de santé — chiffrement et accès restreint obligatoires.</li>
+    <li><strong>Exactitude :</strong> Base de médicaments synchronisée avec la BDPM (Base de Données Publique des Médicaments).</li>
+    <li><strong>Fiabilité des rappels :</strong> Infrastructure redondante — tolérance zéro sur les rappels de prise.</li>
+    <li><strong>Accessibilité :</strong> Interface simplifiée pour les patients âgés ou peu à l'aise avec le numérique.</li>
+    <li><strong>Auditabilité :</strong> Chaque prise confirmée est horodatée et immuable (non modifiable a posteriori).</li>
+  </ul>
+
+  <div class="note">
+    ℹ Les données de suivi de traitement peuvent être utilisées à des fins d'études cliniques anonymisées, sous réserve du consentement explicite et éclairé du patient.
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════ SECTION 4 : ARCHITECTURE -->
+  <div class="module-header">
+    <div class="module-number">04</div>
+    <div>
+      <div class="module-title">Architecture &amp; Sécurité Globale</div>
+      <div class="module-subtitle">Principes transversaux applicables à l'ensemble de la plateforme</div>
+    </div>
+  </div>
+
+  <h2>4.1 Principes d'architecture</h2>
+  <ul class="spec-list">
+    <li><strong>Architecture microservices :</strong> Chaque module est un service indépendant, déployable séparément.</li>
+    <li><strong>API RESTful :</strong> Communication via API REST documentée (OpenAPI 3.0).</li>
+    <li><strong>Base de données :</strong> PostgreSQL pour les données relationnelles, Redis pour le cache et les sessions.</li>
+    <li><strong>Hébergement HDS :</strong> Infrastructure certifiée Hébergeur de Données de Santé.</li>
+    <li><strong>Haute disponibilité :</strong> Déploiement multi-zones avec failover automatique.</li>
+  </ul>
+
+  <h2>4.2 Authentification et contrôle d'accès</h2>
+  <ul class="spec-list">
+    <li><strong>Authentification :</strong> OAuth 2.0 + OpenID Connect. 2FA obligatoire pour les médecins.</li>
+    <li><strong>Rôles :</strong> RBAC — rôles Médecin, Patient, Administrateur.</li>
+    <li><strong>Sessions :</strong> Expiration automatique après 30 minutes d'inactivité.</li>
+    <li><strong>Journalisation :</strong> Traçabilité complète des accès aux données de santé (logs d'audit).</li>
+  </ul>
+
+  <h2>4.3 Conformité réglementaire</h2>
+  <table>
+    <thead><tr><th>Réglementation</th><th>Exigence</th><th>Statut</th></tr></thead>
+    <tbody>
+      <tr><td><strong>RGPD</strong></td><td>Consentement, droit d'accès, portabilité, droit à l'effacement</td><td><span class="badge badge-haute">Obligatoire</span></td></tr>
+      <tr><td><strong>HDS (L.1111-8)</strong></td><td>Hébergement certifié pour les données de santé à caractère personnel</td><td><span class="badge badge-haute">Obligatoire</span></td></tr>
+      <tr><td><strong>ANSSI</strong></td><td>Recommandations de sécurité des systèmes d'information de santé</td><td><span class="badge badge-moyenne">Recommandé</span></td></tr>
+      <tr><td><strong>PGSSI-S</strong></td><td>Politique Générale de Sécurité des SI de Santé</td><td><span class="badge badge-haute">Obligatoire</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>4.4 Roadmap de développement</h2>
+  <div class="roadmap">
+    <div class="phase-card">
+      <div class="phase-num">Phase 1</div>
+      <div class="phase-name">MVP</div>
+      <div class="phase-dur">⏱ 3 mois</div>
+      <div class="phase-desc">Messagerie sécurisée + Gestion des rendez-vous (fonctions essentielles). Authentification et espace médecin/patient de base.</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">Phase 2</div>
+      <div class="phase-name">Suivi des Traitements</div>
+      <div class="phase-dur">⏱ 2 mois</div>
+      <div class="phase-desc">Module de suivi des traitements, rappels automatiques, tableau de bord d'observance pour le médecin.</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">Phase 3</div>
+      <div class="phase-name">Analytics &amp; Données</div>
+      <div class="phase-dur">⏱ 2 mois</div>
+      <div class="phase-desc">Statistiques avancées, indicateurs de santé patients, export de données et rapports automatisés.</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">Phase 4</div>
+      <div class="phase-name">Application Mobile</div>
+      <div class="phase-dur">⏱ 3 mois</div>
+      <div class="phase-desc">Application mobile native iOS / Android, notifications push enrichies, interface hors-ligne pour les patients.</div>
+    </div>
+  </div>
+
+  <div class="note">
+    ℹ Ce document sera mis à jour à chaque fin de phase. Les priorités peuvent évoluer en fonction des retours utilisateurs et des contraintes techniques identifiées en cours de développement.
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Plateforme Médecin-Patient — Document de Spécifications v1.0 — Mai 2026 — Confidentiel<br>
+    Ahmed Abdessamad · ahmedabdessamed02@gmail.com
+  </div>
+
+</div>
+
+<!-- Bouton imprimer en PDF -->
+<button class="print-btn" onclick="window.print()">
+  🖨️ Exporter en PDF
+</button>
+
+</body>
+</html>
